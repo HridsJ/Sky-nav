@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Air Army</title>
+    <meta name="title" content="Sky - Nav" />
+    <meta
+      name="description"
+      content="."
+    />
+
+    <!--establish early connectection with goog -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <!-- use cross origin coz google fonts be like that sometimes-->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--load bebas neue-->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--load animations and my css file-->
+    <script type="module" crossorigin src="/js/main.js"></script>
+    <link rel="stylesheet" crossorigin href="/css/main.css">
+  </head>
+
+  <body>
+    <main class="home" data-scroll-container>
+
+      <br><br><br><br><br><br>
+      <!-- MAIN HEADING SECTION -->
+      <section class="home__hero">
+        <div class="hero__title">
+          <h1 class="mobile">
+            SKY <br />
+            —— NAV
+          </h1>
+          <h1 class="hero__title__top overflow desktop">
+            <div class="hero__title__top" title-overflow>
+              <span
+                class="hero__title__left"
+                data-scroll=""
+                data-scroll-direction="horizontal"
+                data-scroll-position="top"
+                data-scroll-speed="7"
+              >
+                <span class="hero__hover">S</span>
+                <span class="hero__hover">K</span>
+                <span class="hero__hover">Y</span>
+              </span>
+              <span class="hero__title__dash desktop">——</span>
+              <span class="hero__title__dash tablet">——</span>
+
+              <span
+                class="hero__title__right"
+                data-scroll=""
+                data-scroll-direction="horizontal"
+                data-scroll-position="top"
+                data-scroll-speed="-7"
+              >
+                <span class="hero__hover">N</span>
+                <span class="hero__hover">A</span>
+                <span class="hero__hover">V</span>
+              </span>
+            </div>
+          </h1>
+          <!-- <br><br><br><br><br><br><br><br><br><br><br><br> -->
+          <!-- front title -->
+          <span class="hero__title__bottom overflow">
+            <div class="hero__title__bottom">
+              <!-- bottom description -->
+              <div class="bottom__right">
+                <p class="hero__paragraph">
+                  <span class="first-word">About</span> &nbsp;    Quick navigation website, ideal for small aircrafts. Uses live weather data to tailor the best path to your destination.
+                </p>
+              </div>
+            </div>
+          </span>
+
+        </div>
+      </section>
+
+      <!-- line  -->
+      <section class = "home__projects">
+        <span class="home__projects__line right">
+          <span></span>
+        </span>
+      </section>
+
+      <!-- Details, Future -->
+      <section class="home__content">
+        <h2 class="home__content__title">Some details about SKYnav</h2>
+        <p class="home__content__desc">
+          Skynav is a web application designed to optimize flight paths for small aircraft, including drones and light helicopters. Leveraging the OpenWeather API, it gathers real-time data on snow, rain, and wind. A sophisticated algorithm, combining A* search with a scikit-learn forest classifier, calculates the safest, most efficient routes, minimizing weather exposure. These routes are then visualized on an interactive map using Leaflet, providing pilots with clear, dynamic guidance. Skynav enhances flight safety and efficiency by delivering data-driven, weather-aware route planning within a user-friendly web interface. This accessibility allows for pre-flight planning and in-flight adjustments from any device with internet access.
+          <!-- just in case we want to add something with a link to it -->
+        </p>
+
+        <br><br><br><br>
+
+        <h2 class="home__content__title">FUTURE ENDEAVOURS</h2>
+        <p class="home__content__desc">
+          Skynav aims to expand its capabilities by integrating more comprehensive weather data, including icing, turbulence, and visibility. Future development includes real-time air traffic data integration for collision avoidance and dynamic rerouting. Machine learning will be employed to refine the forest classifier for more accurate weather impact predictions. Implementing 3D mapping and terrain analysis will enhance route visualization and safety. Skynav will also explore integration with onboard flight systems for seamless data transfer and automated flight adjustments. User-specific profiles and preferences will be incorporated for personalized route optimization, aiming to become a complete flight planning and navigation solution. We invite forward-thinking sponsors and companies seeking innovative startups to join us in revolutionizing small aircraft flight safety and efficiency.
+          <!-- just in case we want to add something with a link to it -->
+        </p>
+
+      </section>
+
+      <!-- Try our stuff out section -->
+      <section class="home__projects">
+        <!-- line 1 -->
+        <span class="home__projects__line left">
+          <span></span>
+        </span>
+
+        <!-- Try our tool out-->
+        <div class="home__projects__project">
+          <!--
+          put the link for new website here in href bro
+          -->
+          <a
+            href="/Location_page.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="home__projects__project__link"
+          >
+            <h1
+              class="home__projects__project__title"
+              data-scroll=""
+              data-scroll-direction="horizontal"
+              data-scroll-speed="8"
+            >
+              <span class="inline-ovh">
+                <div class="title__main right">
+                  <span
+                    class="slide-up"
+                    data-content="TRY OUR TRAVEL COMPANION OUT!"
+                    aria-hidden="true"
+                  ></span>
+                  TRY OUR TRAVEL COMPANION OUT!
+                </div>
+              </span>
+            </h1>
+          </a>
+
+          <!-- mobile version -->
+          <div class="project__link">
+            <a
+              href="/Location_page.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="c-button"
+            >
+              <span class="c-link">
+                <span class="c-link__inner">
+                  <span>
+                    Visit Site
+                    <span class="share-icon"
+                      ><svg
+                        width="20"
+                        height="20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M13.337 7.845l-7.173 7.173-1.178-1.179 7.172-7.172H5.837V5h9.166v9.167h-1.666V7.845z"
+                          fill="#777"
+                        /></svg
+                    ></span>
+                  </span>
+                </span>
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <!-- line 2 -->
+        <!--
+        <span class="home__projects__line right">
+          <span></span>
+        </span>
+        -->
+
+        <!-- check our git repository out -->
+        <div class="home__projects__project">
+        <!-- put link for your next webpage over here -->
+          <a
+            href="https://github.com/BetterThanYou73/SkyNav-AirArmy.git"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="home__projects__project__link"
+          >
+            <h1
+              class="home__projects__project__title"
+              data-scroll=""
+              data-scroll-direction="horizontal"
+              data-scroll-speed="-8"
+            >
+              <span class="inline-ovh">
+                <div class="title__main left">
+                  <span
+                    class="slide-up"
+                    data-content="CHECK OUR REPOSITORY OUT!"
+                    aria-hidden="true"
+                  ></span>
+                  CHECK OUR REPOSITORY OUT!
+                </div>
+              </span>
+            </h1>
+          </a>
+
+          <div class="project__link">
+            <a
+              href="https://github.com/BetterThanYou73/AeroWeather-AirArmy.git"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="c-button"
+            >
+              <span class="c-link">
+                <span class="c-link__inner">
+                  <span>
+                    Visit Site
+                    <span class="share-icon"
+                      ><svg
+                        width="20"
+                        height="20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M13.337 7.845l-7.173 7.173-1.178-1.179 7.172-7.172H5.837V5h9.166v9.167h-1.666V7.845z"
+                          fill="#777"
+                        /></svg
+                    ></span>
+                  </span>
+                </span>
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <!-- line 3 -->
+        <span class="home__projects__line left">
+          <span></span>
+        </span>
+
+      </section>
+
+      <!-- email -->
+      <section class="home__content">
+        <div class="home__contact__email">
+          <button class="email">SKYNAV.AIRARMY@GMAIL.COM</button>
+          <div class="to-copy">
+            <span>Click to Copy email because we're so awesome and you want to contact us</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- line  -->
+      <section class = "home__projects">
+        <span class="home__projects__line right">
+          <span></span>
+        </span>
+      </section>
+
+      <!-- time thing -->
+      <!--
+      <footer class="home__footer" id="js-footer">
+        <div class="home__footer__center">
+            <div class="time">
+                <span data-hour></span>
+                <span class="flash">:</span>
+                <span data-minute></span>
+            </div>
+        </div>
+      </footer>
+      -->
+
+    </main>
+
+  </body>
+</html>
