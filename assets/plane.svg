@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg903"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="airplane.svg">
+  <defs
+     id="defs897">
+    <radialGradient
+       fx="0"
+       fy="0"
+       cx="0"
+       cy="0"
+       r="1"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.3466156,0,0,2.3466156,128.09223,197.86853)"
+       spreadMethod="pad"
+       id="radialGradient366">
+      <stop
+         style="stop-opacity:1;stop-color:#fff33b"
+         offset="0"
+         id="stop356" />
+      <stop
+         style="stop-opacity:1;stop-color:#fdc70c"
+         offset="0.2005635"
+         id="stop358" />
+      <stop
+         style="stop-opacity:1;stop-color:#fdc70c"
+         offset="0.423191"
+         id="stop360" />
+      <stop
+         style="stop-opacity:1;stop-color:#f3903f"
+         offset="0.759448"
+         id="stop362" />
+      <stop
+         style="stop-opacity:1;stop-color:#ed683c"
+         offset="1"
+         id="stop364" />
+    </radialGradient>
+    <radialGradient
+       fx="0"
+       fy="0"
+       cx="0"
+       cy="0"
+       r="1"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.3466243,0,0,2.3466243,120.94676,197.71942)"
+       spreadMethod="pad"
+       id="radialGradient324">
+      <stop
+         style="stop-opacity:1;stop-color:#fff33b"
+         offset="0"
+         id="stop314" />
+      <stop
+         style="stop-opacity:1;stop-color:#fdc70c"
+         offset="0.2005635"
+         id="stop316" />
+      <stop
+         style="stop-opacity:1;stop-color:#fdc70c"
+         offset="0.423191"
+         id="stop318" />
+      <stop
+         style="stop-opacity:1;stop-color:#f3903f"
+         offset="0.759756"
+         id="stop320" />
+      <stop
+         style="stop-opacity:1;stop-color:#ed683c"
+         offset="1"
+         id="stop322" />
+    </radialGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.4576767"
+     inkscape:cx="332.66676"
+     inkscape:cy="661.68003"
+     inkscape:document-units="mm"
+     inkscape:current-layer="g65-7"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata900">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       style="font-size:12px;fill:#1a1a1a;stroke:#ffffff"
+       id="g65-7"
+       font-size="12"
+       transform="matrix(0.28289579,0,0,0.28289579,94.516679,23.549812)">
+      <path
+         style="fill:#1a1a1a;stroke-width:17.66908836;stroke:none"
+         inkscape:connector-curvature="0"
+         id="path49"
+         d="m 272.11752,251.20854 c 32.20539,-32.2037 -12.33835,-74.30568 -44.13567,-42.50665 l -117.42516,117.42176 -268.99422,-71.10743 -44.84244,44.84414 221.711674,116.76601 -89.668825,89.66883 -69.709809,-8.55884 -35.46539,35.46539 79.086841,41.58244 41.582445,79.08686 35.465399,-35.46728 -8.152467,-69.30155 L 61.238728,459.4334 175.49928,679.69606 220.34172,634.85209 152.26628,371.2999 272.12621,251.21552 Z" />
+    </g>
+  </g>
+</svg>

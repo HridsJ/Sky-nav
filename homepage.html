@@ -21,6 +21,19 @@
       rel="stylesheet"
     />
 
+    <!--
+        preload to prevent load delays, use fonts from assests, woff2 is extension for web font format supporter
+        by chrome, cross origin because we may need to load fonts form different domains
+        nonsense name to prevent caching
+    -->
+    <link
+      rel="preload"
+      href="/assets/opensauce-medium-DHCY1jhb.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
     <!--load animations and my css file-->
     <script type="module" crossorigin src="https://cdn.jsdelivr.net/gh/HridsJ/Sky-nav-add@main/js/main.js"></script>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/HridsJ/Sky-nav-add@main/css/main.css">
@@ -120,7 +133,7 @@
           put the link for new website here in href bro
           -->
           <a
-            href="Location_page.html"
+            href="/Location_page.html"
             target="_blank"
             rel="noopener noreferrer"
             class="home__projects__project__link"
@@ -147,7 +160,7 @@
           <!-- mobile version -->
           <div class="project__link">
             <a
-              href="Location_page.html"
+              href="/Location_page.html"
               target="_blank"
               rel="noopener noreferrer"
               class="c-button"
@@ -263,7 +276,20 @@
           <span></span>
         </span>
       </section>
-      
+
+      <!-- time thing -->
+      <!--
+      <footer class="home__footer" id="js-footer">
+        <div class="home__footer__center">
+            <div class="time">
+                <span data-hour></span>
+                <span class="flash">:</span>
+                <span data-minute></span>
+            </div>
+        </div>
+      </footer>
+      -->
+
     </main>
 
   </body>

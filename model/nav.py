@@ -16,14 +16,15 @@ def decode_api_key(encoded_key: str) -> str:
     """Decode an API key from its Base64 encoded form."""
     decoded_bytes = base64.b64decode(encoded_key.encode("utf-8"))
     return decoded_bytes.decode("utf-8")
+
 #############################################
 # GLOBAL VARIABLES
 #############################################
-GRID_SIZE = 10
-ENCODED = "Yjg2NWY4YWI2NDk5NzQyODc5MjIxM2MxMjgwYWU4OTU=" 
+GRID_SIZE = 15
+ENCODED = "Yjg2NWY4YWI2NDk5NzQyODc5MjIxM2MxMjgwYWU4OTU="
 WEATHER_API_KEY = decode_api_key(ENCODED)
-WIND_THRESHOLD = 6
-RAIN_THRESHOLD = 1.5
+WIND_THRESHOLD = 7
+RAIN_THRESHOLD = 2
 
 # Use maximum workers available (for I/O-bound tasks)
 MAX_WORKERS = (os.cpu_count() or 4) * 2
@@ -354,11 +355,11 @@ def print_route_as_json(latlon_route):
 # nav_call FUNCTION: Main Entry Point
 #############################################
 def nav_call(start_lat, start_lon, goal_lat, goal_lon):
-    
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
     model_path = os.path.join(current_dir, "route_model_multi.pkl")
     training_path = os.path.join(current_dir, "training_data")
-    
+
     # 1) Load the pre-trained model (if available)
     try:
         with open(model_path, "rb") as f:
@@ -452,7 +453,7 @@ def nav_call(start_lat, start_lon, goal_lat, goal_lon):
         result_list.append(point)
         print(point)
     print(result_list)
-    
+
     return result_list
 
 #############################################
@@ -460,7 +461,7 @@ def nav_call(start_lat, start_lon, goal_lat, goal_lon):
 #############################################
 if __name__ == "__main__":
     mode = input("Enter mode: 'train' or 'test' (default 'train'): ").strip().lower() or "train"
-    
+
     if mode == "train":
         num_scenarios = int(input("Enter number of random training scenarios (default 100): ") or "100")
         print("Starting training on random scenarios...")

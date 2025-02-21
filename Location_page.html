@@ -1,64 +1,430 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" /> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Air Army</title>
-    <meta name="title" content="Sky - Nav" />
-    <meta
-      name="description"
-      content="."
-    />
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SkyNav - Location Page</title>
 
-    <!-- Clock feature -->
-    <script
-      type="text/javascript"
-      src="//w.24timezones.com/l.js"
-      async
-    ></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!--establish early connectection with goog -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <!-- use cross origin coz google fonts be like that sometimes-->
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!--load bebas neue-->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
-      rel="stylesheet"
-    />
+  <!-- Mapbox GL JS CSS (for the embedded map) -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet" />
 
-    <!--load animations and my css file-->
-    <script type="module" crossorigin src="https://cdn.jsdelivr.net/gh/HridsJ/Sky-nav-add@main/js/main.js"></script>
-    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/HridsJ/Sky-nav-add@main/css/main.css">
-  </head>
+  <!-- Google Fonts: Bebas Neue -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
-  <body>
-    <div class="image-container">
-      <img src = "./assets/logo.png" alt = "centered-image" width = "200" height = "200">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Bebas Neue', sans-serif;
+      background: #000;
+      overflow: hidden;
+    }
+
+    /* The map behind everything (if you want a mini map for picking coords) */
+    #map {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1; /* behind the form */
+    }
+
+    /* The form panel for input */
+    #inputForm {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 1);
+    padding: 25px;
+    border-radius: 25px;
+    max-width: fit-content;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+    }
+    #inputForm h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      font-family:sans-serif;
+      font-weight: lighter;
+    }
+    #inputForm label {
+    display: block;
+    margin-top: 20px;
+    font-size: 16px;
+    color: black;
+    font-family: sans-serif;
+    }
+    #inputForm input {
+    width: 90%;
+    padding: 10px;
+    margin-top: 10px;
+    /* margin-right: 20px; */
+    font-size: 16px;
+    border: 1px solid #e3e3e3;
+    border-radius: 7px;
+    }
+    #inputForm button {
+      margin-top: 5px;
+      padding: 8px 15px;
+      font-size: 16px;
+      background: #060061;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #inputForm button:hover {
+      background: #010049;
+    }
+
+    /* Buttons for picking Start vs Destination from map */
+    #mapModeBtns {
+      display: flex;
+      margin-top: 10px;
+      gap: 10px;
+    }
+    #mapModeBtns button {
+    /* flex: 1; */
+    padding: 15px;
+    font-size: 16px;
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 0px;
+}
+    #mapModeBtns button:hover {
+      background:#ececec;
+    }
+
+    /* Info overlay instead of alerts */
+    #infoOverlay {
+    position: absolute;
+    top: 100px;
+    position-area: top;
+    z-index: 11;
+    background: rgb(0 0 0 / 67%);
+    color: #fff;
+    padding: 13px 15px;
+    border-radius: 18px;
+    display: none;
+    font-family: sans-serif;
+    }
+
+    /* The loading overlay with 3D model */
+    #loadingScreen {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #060061;
+      display: none; /* hidden by default */
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: #fff;
+    }
+    #loadingCanvas {
+      width: 500px;
+      height: 500px;
+      background: transparent;
+    }
+    #loadingText {
+    margin-top: 20px;
+    font-size: 50px;
+    font-weight: bolder;
+    text-align: center;
+    font-stretch: ultra-expanded;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Possibly behind everything is a Mapbox map so user can click for coords -->
+  <div id="map"></div>
+
+  <!-- The form panel -->
+  <div id="inputForm">
+    <h2>Enter Coordinates</h2>
+
+    <label for="startInput">Start (lat, lon):</label>
+    <input type="text" id="startInput" placeholder="e.g. 51.048615, -113.530111" />
+
+    <label for="destInput">Destination (lat, lon):</label>
+    <input type="text" id="destInput" placeholder="e.g. 53.544388, -113.490929" />
+
+    <!-- Buttons to let user pick from map -->
+    <div id="mapModeBtns">
+      <button id="selectStartBtn">Starting Point</button>
+      <button id="selectDestBtn">Your Destination</button>
     </div>
-
-    <div class="form-container">
-        <div class="from-section">
-            <p class="location__header">FROM</p>
-            <label for="location_longitude"> LONGITUDE </label>
-            <input type="number" id="inputA" class="input-box" step = "any">
-            <label for="location_latitude"> LATITUDE </label>
-            <input type="number" id="inputB" class="input-box" step = "any">
-        </div>
-        <span class="arrow">➤</span>
-        <div class="to-section">
-            <p class="location__header">TO</p>
-            <label for="destination_longitude"> LONGITUDE </label>
-            <input type="number" id="inputC" class="input-box" step = "any">
-            <label for="destination_latitude"> LATITUDE </label>
-            <input type="number" id="inputD" class="input-box" step = "any">
-        </div>
+    <div style="
+    display: flex;
+    align-content: center;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;">
+    <button id="submitButton" onclick="sendDataToFlask()" fdprocessedid="wf5kz">Go</button>
     </div>
-    <div class="button-container">
-      <button class="nav__button c-button button-font" nav-anim id="submitButton" onclick="sendDataToFlask();url(map.html)">
-          <span> SUBMIT </span>
-      </button>
-    </div>
-  </body>
+  </div>
 
-  </html>
+  <!-- Overlay for messages -->
+  <div id="infoOverlay"></div>
+
+  <!-- Loading screen with 3D model -->
+  <div id="loadingScreen">
+    <canvas id="loadingCanvas"></canvas>
+    <div id="loadingText">Loading your Route</div>
+  </div>
+
+  <!-- Mapbox GL JS -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+
+  <!-- Three.js + GLTFLoader (matching version r128) -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+  <!-- If you need a separate script for map logic, you can put it here or inline -->
+  <script>
+    // Insert your actual Mapbox token:
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWpvc2hpMyIsImEiOiJjbTdhYjA1bWEwMjNtMnFwd211eXBsMncyIn0.PEyYzcuea46Nv_yPKH8uwA';
+
+    // Initialize map
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [-113.49, 53.545],
+      zoom: 9,
+      projection: 'globe'
+    });
+    map.addControl(new mapboxgl.NavigationControl(), 'bottom-left');
+
+    let selectingStart = false;
+    let selectingDest = false;
+    let startMarker = null;
+    let destMarker = null;
+
+    const infoOverlay = document.getElementById('infoOverlay');
+    const startBtn = document.getElementById('selectStartBtn');
+    const destBtn = document.getElementById('selectDestBtn');
+
+    function showOverlay(msg) {
+      infoOverlay.textContent = msg;
+      infoOverlay.style.display = "block";
+    }
+    function hideOverlay() {
+      infoOverlay.style.display = "none";
+    }
+
+    startBtn.addEventListener('click', () => {
+      selectingStart = true;
+      selectingDest = false;
+      showOverlay("Click on map to set Start location.");
+    });
+    destBtn.addEventListener('click', () => {
+      selectingStart = false;
+      selectingDest = true;
+      showOverlay("Click on map to set Destination location.");
+    });
+
+    // On map click
+    map.on('click', (e) => {
+      if (selectingStart) {
+        placeMarker('start', e.lngLat);
+        selectingStart = false;
+        hideOverlay();
+      } else if (selectingDest) {
+        placeMarker('dest', e.lngLat);
+        selectingDest = false;
+        hideOverlay();
+      }
+    });
+
+    function placeMarker(which, lngLat) {
+      if (which === 'start') {
+        if (!startMarker) {
+          startMarker = new mapboxgl.Marker({ color: 'green', draggable: true })
+            .setLngLat(lngLat)
+            .addTo(map)
+            .on('dragend', () => {
+              const pos = startMarker.getLngLat();
+              updateInputFields('start', pos.lat, pos.lng);
+            });
+        } else {
+          startMarker.setLngLat(lngLat);
+        }
+        updateInputFields('start', lngLat.lat, lngLat.lng);
+      } else {
+        if (!destMarker) {
+          destMarker = new mapboxgl.Marker({ color: 'blue', draggable: true })
+            .setLngLat(lngLat)
+            .addTo(map)
+            .on('dragend', () => {
+              const pos = destMarker.getLngLat();
+              updateInputFields('dest', pos.lat, pos.lng);
+            });
+        } else {
+          destMarker.setLngLat(lngLat);
+        }
+        updateInputFields('dest', lngLat.lat, lngLat.lng);
+      }
+    }
+
+    function updateInputFields(which, lat, lng) {
+      if (which === 'start') {
+        document.getElementById('startInput').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      } else {
+        document.getElementById('destInput').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      }
+    }
+
+    // 3D Loading screen
+    let loadingScene, loadingCamera, loadingRenderer;
+  let loadingModel, swirlMesh;
+  let loadingAnimationId = null;
+  let planeY = 0; // for the up-down "flying" motion
+
+  function initLoadingAnimation() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    loadingScreen.style.display = 'flex';
+
+    const canvas = document.getElementById('loadingCanvas');
+    loadingRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    loadingRenderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+    loadingScene = new THREE.Scene();
+    // Position camera so we see plane + swirl
+    loadingCamera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    loadingCamera.position.set(0, 0, 60);
+
+    // Basic lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    loadingScene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    directionalLight.position.set(10, 60, 0);
+    loadingScene.add(directionalLight);
+
+    // Load the plane model
+    const loader = new THREE.GLTFLoader();
+    loader.load('assets/plane.glb', (gltf) => {
+      loadingModel = gltf.scene;
+      // Scale it down or up as needed
+      loadingModel.scale.set(25, 25, 25);
+      // Center it on XZ-plane (so it's "above" the swirl)
+      loadingModel.position.set(0, 0, 0);
+      // Slight rotation if needed to orient the plane
+      // e.g., tip pointing screen-left, etc.
+      loadingModel.rotation.set(1.20, 2.15, -0.90);
+
+      loadingScene.add(loadingModel);
+    }, undefined, (error) => {
+      console.error('Error loading plane model:', error);
+      hideLoading();
+    });
+
+    // Create a swirling "wind" plane below
+    const swirlTex = new THREE.TextureLoader().load('assets/wiend.png');
+    // ^ Provide your own swirl texture here
+    const swirlMat = new THREE.MeshBasicMaterial({
+      map: swirlTex,
+      transparent: true,
+      opacity: 0.8,
+      depthWrite: false
+    });
+    const swirlGeom = new THREE.PlaneGeometry(30, 30);
+    swirlMesh = new THREE.Mesh(swirlGeom, swirlMat);
+    swirlMesh.rotation.x = -Math.PI / 2; // lie flat
+    swirlMesh.position.y = -10;         // under the plane
+    loadingScene.add(swirlMesh);
+
+    animateLoading(); // start the render loop
+  }
+
+  function animateLoading() {
+    // Up-down motion for the plane
+    if (loadingModel) {
+      planeY += 0.03; // speed of vertical bob
+      // move it up & down between ~ -2..+2
+      loadingModel.position.y = Math.sin(planeY) * 2;
+    }
+
+    // Spin the swirl
+    if (swirlMesh) {
+      swirlMesh.rotation.y += 0.02; // slow rotation
+    }
+
+    loadingRenderer.render(loadingScene, loadingCamera);
+    loadingAnimationId = requestAnimationFrame(animateLoading);
+  }
+
+  function hideLoading() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    loadingScreen.style.display = 'none';
+    if (loadingAnimationId) {
+      cancelAnimationFrame(loadingAnimationId);
+      loadingAnimationId = null;
+    }
+  }
+
+    // The function to send data
+    function sendDataToFlask() {
+      // parse user inputs => we want an array of 4 elements: [startLat, startLon, endLat, endLon]
+      const startVal = document.getElementById('startInput').value;
+      const destVal = document.getElementById('destInput').value;
+
+      function parseInput(input) {
+        const parts = input.split(',');
+        if (parts.length === 2) {
+          return [parseFloat(parts[0].trim()), parseFloat(parts[1].trim())];
+        }
+        return null;
+      }
+      const startCoords = parseInput(startVal);
+      const destCoords = parseInput(destVal);
+
+      if (!startCoords || !destCoords) {
+        showOverlay('Invalid lat/lon. Please check inputs.');
+        return;
+      }
+
+      // Show loading
+      initLoadingAnimation();
+
+      const dataArray = [
+        startCoords[0],
+        startCoords[1],
+        destCoords[0],
+        destCoords[1]
+      ];
+
+      fetch('/process', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: dataArray })
+      })
+      .then(resp => resp.json())
+      .then(routeData => {
+        console.log('Received route from /process:', routeData);
+        // store in localStorage
+        localStorage.setItem('locations', JSON.stringify(routeData));
+        // hide loader
+        hideLoading();
+        // redirect to /map
+        window.location.href = '/map';
+      })
+      .catch(err => {
+        console.error('Error from /process:', err);
+        showOverlay('Error from server. Check console logs.');
+        hideLoading();
+      });
+    }
+  </script>
+</body>
+</html>

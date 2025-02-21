@@ -1,213 +1,382 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SkyNav - Map View</title>
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
+  <meta charset="UTF-8" />
+  <title>SkyNav - Map & Globe View</title>
+  <!-- Mapbox GL JS CSS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet" />
+  <!-- Google Fonts: Bebas Neue -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
-    /* Basic page reset */
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
+      overflow: hidden; /* no scrollbar */
+      font-family: 'Bebas Neue', sans-serif;
+      background: #000;
     }
+    /* Map container */
     #map {
-      width: 100%;
-      height: 100vh;
-    }
-
-    /* Example nav bar styling */
-    .navbar {
       position: absolute;
       top: 0;
-      left: 0;
+      bottom: 0;
       width: 100%;
-      height: 50px;
-      background-color: #333;
-      color: #fff;
+    }
+    /* Navbar styling */
+    .navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 2;
+    background-color: #060061;
+    color: #fff;
+    opacity: 80%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+    }
+    .navbar a {
       display: flex;
       align-items: center;
-      padding: 0 1rem;
-      z-index: 9999; /* on top of the map */
+      text-decoration: none;
+      color: inherit;
     }
-    .navbar h1 {
-      margin: 0;
-      font-size: 1.2rem;
+    .navbar img.logo {
+      height: 80px;
+      margin-right: 0;
+      margin-top: 2px;
+      opacity: 100%;
     }
-    .to-locations-page {
-      margin-left: auto;
-      cursor: pointer;
-      background: #666;
-      padding: 0.5rem 1rem;
-      border: none;
-      color: #fff;
-      font-size: 1rem;
+    h1 {
+      margin: 10px;
+      font-size: 24px;
+      opacity: 100%;
+    }
+    /* Sidebar for switching styles */
+
+    .sidebar {
+    position: absolute;
+    top: 90px;
+    /* left: 10px; */
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 4px;
+    z-index: 2;
+    font-size: 16px;
+    /* box-shadow: grey 2px 2px; */
+    font-family: Roboto, Arial, sans-serif;
+    position: absolute;
+    /* bottom: 20px; */
+    right: 20px;
+    /* z-index: 2; */
+    background: rgba(255, 255, 255, 1);
+    padding: 20px 0px;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #333;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
 
-    /* Distance box in the corner */
+    .sidebar ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .sidebar li {
+      cursor: pointer;
+      padding: 10px;
+      padding-left:15px;
+      padding-right:15px;
+      margin-bottom: 5px;
+      text-align: center;
+      color: black;
+      font-family: sans-serif;
+      font-style: bold;
+    }
+    .sidebar li:hover {
+      background: #e3e3e3;
+    }
+    /* Distance box */
     .distance-box {
       position: absolute;
-      top: 60px; /* below the nav bar */
+      bottom: 25px;
       right: 20px;
-      z-index: 9999;
-      background: rgba(255, 255, 255, 0.8);
+      z-index: 2;
+      background: rgba(255, 255, 255, 1);
       padding: 10px 15px;
-      border-radius: 4px;
-      font-size: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: sans-serif;
       color: #333;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      display: none;
     }
   </style>
 </head>
 <body>
+  <!-- Navbar with logo and link to homepage -->
+  <div class="navbar" id="navbar">
+    <a href="/">
+      <img src="assets/logo.png" alt="SkyNav Logo" class="logo" id="navLogo" style="opacity:100%">
+      <h1>SkyNav</h1>
+    </a>
+  </div>
 
-<!-- Example navigation bar -->
-<div class="navbar">
-  <h1>SkyNav - Map View</h1>
-  <button class="to-locations-page" onclick="window.location.href='Location_page.html'">
-    Go to Location Page
-  </button>
-</div>
+  <!-- Sidebar for switching map styles -->
+  <div class="sidebar" style="border-radius: 20px;">
+    <ul>
+      <li data-style="mapbox://styles/mapbox/streets-v11">Streets</li>
+      <li data-style="mapbox://styles/mapbox/satellite-streets-v11">Satellite Streets</li>
+      <li data-style="mapbox://styles/mapbox/navigation-night-v1">Navigation Night</li>
+    </ul>
+  </div>
 
-<!-- A small corner box to display route distance -->
-<div class="distance-box" id="distanceBox" style="display: none;">
-  <strong>Route Distance:</strong> <span id="distanceValue"></span> km
-</div>
+  <!-- Map container -->
+  <div id="map"></div>
 
-<div id="map"></div>
+  <!-- Distance display -->
+  <div class="distance-box" id="distanceBox">
+    <strong>Route Distance:</strong> <span id="distanceValue"></span> km
+  </div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- Leaflet PolylineDecorator -->
-<script src="https://unpkg.com/leaflet-polylinedecorator"></script>
+  <!-- Mapbox GL JS and Turf.js -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf/turf.min.js"></script>
 
-<script>
-  // 1) Retrieve your locations array from localStorage
-  const stored = localStorage.getItem('locations');
-  let locations = stored ? JSON.parse(stored) : [];
+  <script>
+    // 1) Set Mapbox token (note: client‐side tokens cannot be fully hidden)
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWpvc2hpMyIsImEiOiJjbTdhYjA1bWEwMjNtMnFwd211eXBsMncyIn0.PEyYzcuea46Nv_yPKH8uwA';
 
-  if (!locations || !locations.length) {
-    // If there's no route, you can do something like:
-    alert("Bad weather condition or no route found. We advise against flight.");
-    // Or just display an empty map. We won't draw anything else in that case.
-  }
+    // 2) Map style to header background mapping
+    const styleColors = {
+      'mapbox://styles/mapbox/streets-v11': '#ffffff',
+      'mapbox://styles/mapbox/satellite-streets-v11': '#1a1a1a',
+      'mapbox://styles/mapbox/navigation-night-v1': '#000033'
+    };
 
-  // 2) Initialize the map with zoomControl disabled (so we can reposition it)
-  const firstCoords = locations.length ? locations[0].coords : [53.545, -113.49];
-  const map = L.map('map', {
-    zoomControl: false  // disable default top-left control
-  }).setView(firstCoords, 12);
-
-  // 3) Add a custom zoom control in bottom-left
-  L.control.zoom({
-    position: 'bottomleft'
-  }).addTo(map);
-
-  // 4) Add OpenStreetMap tile layer
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: '© OpenStreetMap'
-  }).addTo(map);
-
-  // 5) Create custom icons for Start/End markers
-  const greenIcon = L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  });
-  const blueIcon = L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-  });
-
-  // 6) If we have at least one location, place Start/End markers
-  if (locations.length) {
-    L.marker(locations[0].coords, { icon: greenIcon })
-      .addTo(map)
-      .bindPopup("Start Point");
-
-    if (locations.length > 1) {
-      L.marker(locations[locations.length - 1].coords, { icon: blueIcon })
-        .addTo(map)
-        .bindPopup("End Point");
-    }
-  }
-
-  // 7) Build a polyline from all location coords
-  const polyline = L.polyline(
-    locations.map(loc => loc.coords),
-    { color: 'blue', weight: 4, opacity: 0.5 }
-  ).addTo(map);
-
-  // 8) If more than 1 location, fit map bounds to polyline
-  if (locations.length > 1) {
-    map.fitBounds(polyline.getBounds());
-  }
-
-  // 9) Animate arrows on the polyline using PolylineDecorator
-  let offset = 0;
-  const arrowDecorator = L.polylineDecorator(polyline, {
-    patterns: [
-      {
-        offset: offset + '%',
-        repeat: '10px',  // closer repeat for continuous arrow
-        symbol: L.Symbol.arrowHead({
-          pixelSize: 12,   // bigger arrow
-          polygon: true,   // make arrow more “pointy” (filled triangle)
-          pathOptions: {
-            stroke: true,
-            color: 'red',
-            weight: 2,
-            opacity: 1
-          }
-        })
+    // 3) Function to update header background and logo (switches logo if light theme)
+    function updateHeaderBackground(styleUrl) {
+      const header = document.getElementById('navbar');
+      const logo = document.getElementById('navLogo');
+      const bgColor = styleColors[styleUrl] || '#060061';
+      header.style.backgroundColor = bgColor;
+      if (bgColor.toLowerCase() === '#ffffff') {
+        header.style.color = '#060061';
+        logo.src = 'assets/logo_alternate.png';
+      } else {
+        header.style.color = '#fff';
+        logo.src = 'assets/logo.png';
       }
-    ]
-  }).addTo(map);
-
-  function animateArrow() {
-    // Make the arrow movement slower by e.g. 0.2% increments
-    offset = (offset + .02) % 80;
-    arrowDecorator.setPatterns([{
-      offset: offset + '%',
-      repeat: '10px',
-      symbol: L.Symbol.arrowHead({
-        pixelSize: 12,
-        polygon: true,
-        pathOptions: {
-          stroke: true,
-          color: 'red',
-          weight: 2,
-          opacity: 1
-        }
-      })
-    }]);
-    requestAnimationFrame(animateArrow);
-  }
-  requestAnimationFrame(animateArrow);
-
-  // 10) Calculate total route distance in kilometers (if multiple points)
-  function calculateRouteDistance(locations) {
-    let totalDistance = 0; // in meters
-    for (let i = 0; i < locations.length - 1; i++) {
-      const current = locations[i].coords;
-      const next = locations[i + 1].coords;
-      totalDistance += map.distance(current, next);
     }
-    return totalDistance / 1000; // convert meters to km
-  }
 
-  if (locations.length > 1) {
-    const totalKm = calculateRouteDistance(locations);
-    // Display the distance in the corner box
-    const distanceBox = document.getElementById('distanceBox');
-    const distanceValue = document.getElementById('distanceValue');
-    distanceBox.style.display = 'block';
-    distanceValue.textContent = totalKm.toFixed(2);
-  }
-</script>
+    // 4) Retrieve route data from localStorage
+    const stored = localStorage.getItem('locations');
+    let locations = stored ? JSON.parse(stored) : [];
+    console.log("Route locations:", locations);
+    if (!locations.length) {
+      alert("No route found or weather is bad. We'll show a blank map.");
+    }
+
+    // 5) Convert [lat, lon] to [lon, lat] for Mapbox
+    const convertedCoords = locations.map(loc => {
+      const [lat, lon] = loc.coords;
+      return { ...loc, coords: [lon, lat] };
+    });
+
+    // 6) Build GeoJSON for the route line
+    const routeGeoJSON = {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: convertedCoords.map(loc => loc.coords)
+      }
+    };
+    console.log("GeoJSON coordinates:", routeGeoJSON.geometry.coordinates);
+
+    // 7) Create the Mapbox map with globe projection
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: convertedCoords.length ? convertedCoords[0].coords : [-113.49, 53.545],
+      zoom: 12,
+      projection: 'globe'
+    });
+    map.addControl(new mapboxgl.NavigationControl(), 'bottom-left');
+
+    // 8) Sidebar for switching styles
+    document.querySelectorAll('.sidebar li').forEach(item => {
+      item.addEventListener('click', () => {
+        const newStyle = item.getAttribute('data-style');
+        animatedRouteActive = true;
+        map.setStyle(newStyle);
+        updateHeaderBackground(newStyle);
+      });
+    });
+
+    // 9) When the map loads, update header, add route layers, and fit bounds
+    map.on('load', () => {
+      const styleUrl = map.getStyle().sprite || 'mapbox://styles/mapbox/streets-v11';
+      updateHeaderBackground(styleUrl);
+      addStaticRoute();
+      addMarkers();
+      if (convertedCoords.length > 1) {
+        const bounds = convertedCoords.reduce((b, loc) => b.extend(loc.coords),
+          new mapboxgl.LngLatBounds(convertedCoords[0].coords, convertedCoords[0].coords)
+        );
+        map.fitBounds(bounds, { padding: 50 });
+        // Display route distance using Turf.js
+        const totalKm = calculateRouteDistance(convertedCoords);
+        const distanceBox = document.getElementById('distanceBox');
+        const distanceValue = document.getElementById('distanceValue');
+        distanceBox.style.display = 'block';
+        distanceValue.textContent = totalKm.toFixed(2);
+      }
+      // After 3 seconds, fly out to show globe view then start animation
+      setTimeout(() => {
+        if (convertedCoords.length > 1) {
+          doFlyOutThenAnimate();
+        }
+      }, 3000);
+    });
+
+    // 10) When the style loads (after switching), re-add static route, markers, and animated route if active.
+    map.on('style.load', () => {
+      addStaticRoute();
+      addMarkers();
+      if (animatedRouteActive && convertedCoords.length > 1) {
+        addAnimatedLine();
+      }
+    });
+
+    // 11) Static route: grey base route
+    function addStaticRoute() {
+      if (map.getSource('route-base')) {
+        if (map.getLayer('route-base')) map.removeLayer('route-base');
+        map.removeSource('route-base');
+      }
+      if (convertedCoords.length < 2) return;
+      map.addSource('route-base', {
+        type: 'geojson',
+        data: routeGeoJSON
+      });
+      map.addLayer({
+        id: 'route-base',
+        type: 'line',
+        source: 'route-base',
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: {
+          'line-color': '#888',
+          'line-width': 3
+        }
+      }, 'waterway-label');
+    }
+
+    // 12) Add start and end markers
+    function addMarkers() {
+      document.querySelectorAll('.mapboxgl-marker').forEach(el => el.remove());
+      if (!convertedCoords.length) return;
+      new mapboxgl.Marker({ color: 'green', scale: 1.4 })
+        .setLngLat(convertedCoords[0].coords)
+        .setPopup(new mapboxgl.Popup().setText("Start Point"))
+        .addTo(map);
+      if (convertedCoords.length > 1) {
+        new mapboxgl.Marker({ color: 'blue', scale: 1.4 })
+          .setLngLat(convertedCoords[convertedCoords.length - 1].coords)
+          .setPopup(new mapboxgl.Popup().setText("End Point"))
+          .addTo(map);
+      }
+    }
+
+    // 13) Fly out then animate the route
+    function doFlyOutThenAnimate() {
+      const routeBounds = convertedCoords.reduce((b, loc) => b.extend(loc.coords),
+        new mapboxgl.LngLatBounds(convertedCoords[0].coords, convertedCoords[0].coords)
+      );
+      const center = routeBounds.getCenter();
+      map.flyTo({
+        center: [center.lng, center.lat],
+        zoom: 3.5,
+        speed: 0.5,
+        curve: 1,
+        essential: true
+      });
+      map.once('moveend', () => {
+        addAnimatedLine();
+      });
+    }
+
+    // 14) Animated route layer: recurring red line animation
+    let animTimer = null;
+    function addAnimatedLine() {
+      // Remove previous animated source/layer if exist
+      if (map.getSource('route-anim')) {
+        if (map.getLayer('route-anim-layer')) map.removeLayer('route-anim-layer');
+        map.removeSource('route-anim');
+      }
+      map.addSource('route-anim', {
+        type: 'geojson',
+        data: routeGeoJSON,
+        lineMetrics: true
+      });
+      map.addLayer({
+        id: 'route-anim-layer',
+        type: 'line',
+        source: 'route-anim',
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: {
+          'line-width': 4,
+          'line-gradient': [
+            'interpolate',
+            ['linear'],
+            ['line-progress'],
+            0, 'rgba(0,0,0,0)',
+            0.5, '#ff0000',
+            1, 'rgba(0,0,0,0)'
+          ]
+        }
+      }, 'waterway-label');
+      animateGradient(0);
+    }
+
+    function animateGradient(routeProgress) {
+      const step = 0.005; // adjust speed as needed
+      const gradient = [
+        'interpolate', ['linear'], ['line-progress'],
+        0, 'rgba(0,0,0,0)',
+        routeProgress, '#ff0000',
+        Math.min(1, routeProgress + 0.001), 'rgba(0,0,0,0)',
+        1, 'rgba(0,0,0,0)'
+      ];
+      if (map.getLayer('route-anim-layer')) {
+        map.setPaintProperty('route-anim-layer', 'line-gradient', gradient);
+      }
+      if (routeProgress < 1) {
+        animTimer = requestAnimationFrame(() => {
+          animateGradient(routeProgress + step);
+        });
+      } else {
+        setTimeout(() => {
+          animateGradient(0);
+        }, 300);
+      }
+    }
+
+    // 15) Calculate route distance using Turf.js
+    function calculateRouteDistance(coordsArr) {
+      const line = turf.lineString(coordsArr.map(loc => loc.coords));
+      return turf.length(line, { units: 'kilometers' });
+    }
+    if (convertedCoords.length > 1) {
+      const totalKm = calculateRouteDistance(convertedCoords);
+      const distanceBox = document.getElementById('distanceBox');
+      const distanceValue = document.getElementById('distanceValue');
+      distanceBox.style.display = 'block';
+      distanceValue.textContent = totalKm.toFixed(2);
+    }
+  </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
-var Coordinat_arr = [];
+var locations = [];
 
-fetch("http://127.0.0.1:5000/process", {
+fetch("https://myuser.pythonanywhere.com/process", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -11,9 +11,9 @@ fetch("http://127.0.0.1:5000/process", {
 })
 .then(response => response.json())  // Convert response to JSON
 .then(data => {
-    Coordinat_arr = data.Coordinat_arr;  // Assuming response contains a "Coordinat_arr" array
-    for (let i = 0; i < Coordinat_arr.length; i++) {
-        let [lat, lon] = Coordinat_arr[i]; 
+    locations = data.locations;  // Assuming response contains a "locations" array
+    for (let i = 0; i < locations.length; i++) {
+        let [lat, lon] = locations[i];
         console.log(`Latitude: ${lat}, Longitude: ${lon}`);
     }
 })

@@ -5573,7 +5573,7 @@ function sendDataToFlask() {
         localStorage.setItem('locations', JSON.stringify(data));
 
         // Redirect to map.html
-        window.location.href = "map.html";
+        window.location.href = "/map";
 
     })
     .catch((error) => {
