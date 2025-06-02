@@ -1,5 +1,5 @@
 import os
-from models.nav import nav_call
+from model.nav import nav_call
 from flask import Flask, send_from_directory, request, jsonify
 from flask_cors import CORS  # Optional: use if you need CORS headers
 
