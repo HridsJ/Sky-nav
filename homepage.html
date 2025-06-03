@@ -41,12 +41,30 @@
 
             <div class="link-card">
                 <img src="assets/logo.png" alt="Launch Tool Logo" class="link-icon">
-                <h3 class="link-title">Launch Tool</h3>
+                <h3 class="link-title">Ready to Navigate?</h3>
                 <p class="link-description">
-                    Ready to experience Sky-nav? Access the live application and start navigating like never before.
+                    Experience the future of drone navigation. Scroll down to launch Sky-nav in an immersive way.
                 </p>
-                <a href="./Location_page.html" class="link-button" target="_blank">Open Sky-nav</a>
+                <div class="link-button" style="cursor: default; opacity: 0.8;">Scroll to Launch</div>
             </div>
+        </div>
+    </div>
+
+    <!-- Apple-style Launch Section -->
+    <section class="launch-section">
+        <div class="launch-container">
+            <h2 class="launch-text" id="launchText">Experience SKY-NAV</h2>
+            <div class="preview-container" id="previewContainer">
+                <img src="assets/preview.png" alt="SKY-NAV Preview" class="preview-image">
+                <div class="preview-overlay"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transition Overlay -->
+    <div class="transition-overlay" id="transitionOverlay">
+        <div class="transition-preview" id="transitionPreview">
+            <img src="assets/preview.png" alt="SKY-NAV Preview">
         </div>
     </div>
 
@@ -71,20 +89,95 @@
             }
         }
 
-        // Smooth scroll behavior for internal links
+        let hasNavigated = false;
+
+        // Apple-style scroll animation
+        function handleScroll() {
+            if (hasNavigated) return;
+
+            const scrollTop = window.pageYOffset;
+            const windowHeight = window.innerHeight;
+            const launchSection = document.querySelector('.launch-section');
+            const launchText = document.getElementById('launchText');
+            const previewContainer = document.getElementById('previewContainer');
+            
+            if (!launchSection) return;
+
+            const sectionTop = launchSection.offsetTop;
+            const sectionHeight = launchSection.offsetHeight;
+            const progress = Math.max(0, Math.min(1, (scrollTop - sectionTop) / (sectionHeight - windowHeight)));
+
+            // Show launch text when entering section
+            if (progress > 0.1) {
+                launchText.classList.add('visible');
+            }
+
+            // Scale and animate preview box based on scroll progress
+            if (progress > 0.3) {
+                const scaleProgress = Math.min(1, (progress - 0.3) / 0.4);
+                const scale = 1 + (scaleProgress * 2); // Scale from 1x to 3x
+                const brightness = 1 + (scaleProgress * 0.3);
+                
+                previewContainer.style.transform = `scale(${scale})`;
+                previewContainer.style.filter = `brightness(${brightness})`;
+                previewContainer.style.boxShadow = `0 ${20 + scaleProgress * 40}px ${60 + scaleProgress * 100}px rgba(59, 130, 246, ${0.3 + scaleProgress * 0.4})`;
+
+                // Trigger navigation when scale is nearly complete
+                if (scaleProgress > 0.85 && !hasNavigated) {
+                    hasNavigated = true;
+                    triggerTransition();
+                }
+            }
+        }
+
+        // Trigger the Apple-style transition
+        function triggerTransition() {
+            const overlay = document.getElementById('transitionOverlay');
+            const transitionPreview = document.getElementById('transitionPreview');
+            
+            // Show overlay
+            overlay.classList.add('active');
+            
+            // Expand the preview to fullscreen
+            setTimeout(() => {
+                transitionPreview.classList.add('expand');
+            }, 100);
+            
+            // Navigate after animation completes
+            setTimeout(() => {
+                window.location.href = './Location_page.html';
+            }, 1500);
+        }
+
+        // Click handler for preview container
+        document.getElementById('previewContainer').addEventListener('click', () => {
+            if (!hasNavigated) {
+                hasNavigated = true;
+                triggerTransition();
+            }
+        });
+
+        // Smooth scroll behavior and setup
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
             
-            // Add hover effects to link cards
+            // Add hover effects to original link cards
             const linkCards = document.querySelectorAll('.link-card');
             linkCards.forEach(card => {
                 card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                    if (!this.querySelector('.link-button[style*="cursor: default"]')) {
+                        this.style.transform = 'translateY(-8px) scale(1.02)';
+                    }
                 });
                 card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0) scale(1)';
+                    if (!this.querySelector('.link-button[style*="cursor: default"]')) {
+                        this.style.transform = 'translateY(0) scale(1)';
+                    }
                 });
             });
+
+            // Scroll event listener
+            window.addEventListener('scroll', handleScroll);
         });
 
         // Parallax effect for hero section
