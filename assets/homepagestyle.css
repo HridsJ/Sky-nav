@@ -282,7 +282,7 @@ body {
 }
 
 .preview-overlay::before {
-    content: 'Launch SKY-NAV →';
+    content: ' ';
     color: white;
     font-size: 1.5rem;
     font-weight: 600;
